@@ -3,7 +3,35 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "server", "server\server.vcxproj", "{A7678DF1-B8B2-414D-A3AB-FE8EC2C28180}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client", "client\client.vcxproj", "{BF19D015-3B5F-4FA0-BA36-F84A305F858B}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A7678DF1-B8B2-414D-A3AB-FE8EC2C28180}.Debug|x64.ActiveCfg = Debug|x64
+		{A7678DF1-B8B2-414D-A3AB-FE8EC2C28180}.Debug|x64.Build.0 = Debug|x64
+		{A7678DF1-B8B2-414D-A3AB-FE8EC2C28180}.Debug|x86.ActiveCfg = Debug|Win32
+		{A7678DF1-B8B2-414D-A3AB-FE8EC2C28180}.Debug|x86.Build.0 = Debug|Win32
+		{A7678DF1-B8B2-414D-A3AB-FE8EC2C28180}.Release|x64.ActiveCfg = Release|x64
+		{A7678DF1-B8B2-414D-A3AB-FE8EC2C28180}.Release|x64.Build.0 = Release|x64
+		{A7678DF1-B8B2-414D-A3AB-FE8EC2C28180}.Release|x86.ActiveCfg = Release|Win32
+		{A7678DF1-B8B2-414D-A3AB-FE8EC2C28180}.Release|x86.Build.0 = Release|Win32
+		{BF19D015-3B5F-4FA0-BA36-F84A305F858B}.Debug|x64.ActiveCfg = Debug|x64
+		{BF19D015-3B5F-4FA0-BA36-F84A305F858B}.Debug|x64.Build.0 = Debug|x64
+		{BF19D015-3B5F-4FA0-BA36-F84A305F858B}.Debug|x86.ActiveCfg = Debug|Win32
+		{BF19D015-3B5F-4FA0-BA36-F84A305F858B}.Debug|x86.Build.0 = Debug|Win32
+		{BF19D015-3B5F-4FA0-BA36-F84A305F858B}.Release|x64.ActiveCfg = Release|x64
+		{BF19D015-3B5F-4FA0-BA36-F84A305F858B}.Release|x64.Build.0 = Release|x64
+		{BF19D015-3B5F-4FA0-BA36-F84A305F858B}.Release|x86.ActiveCfg = Release|Win32
+		{BF19D015-3B5F-4FA0-BA36-F84A305F858B}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
