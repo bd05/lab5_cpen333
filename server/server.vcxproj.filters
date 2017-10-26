@@ -16,6 +16,9 @@
     <Filter Include="Source Files\data">
       <UniqueIdentifier>{e4a93261-11f3-41b0-a9d1-7b3dd203b192}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\data\lyrics">
+      <UniqueIdentifier>{8fced15a-154c-497e-9dae-c6ff4d088f73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="music_library_server.cpp">
@@ -52,37 +55,48 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\data\billboard_adult_contemporary.json">
+    <Text Include="data\lyrics\Ella Fitzgerald - Dream A Little Dream Of Me.txt">
+      <Filter>Source Files\data\lyrics</Filter>
+    </Text>
+    <Text Include="data\lyrics\Eurythmics - Sweet Dreams.txt">
+      <Filter>Source Files\data\lyrics</Filter>
+    </Text>
+    <Text Include="data\lyrics\Katy Perry - Teenage Dream.txt">
+      <Filter>Source Files\data\lyrics</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\billboard_adult_contemporary.json">
       <Filter>Source Files\data</Filter>
     </None>
-    <None Include="..\data\billboard_adult_pop.json">
+    <None Include="data\billboard_adult_pop.json">
       <Filter>Source Files\data</Filter>
     </None>
-    <None Include="..\data\billboard_alternative.json">
+    <None Include="data\billboard_alternative.json">
       <Filter>Source Files\data</Filter>
     </None>
-    <None Include="..\data\billboard_country.json">
+    <None Include="data\billboard_country.json">
       <Filter>Source Files\data</Filter>
     </None>
-    <None Include="..\data\billboard_electronic.json">
+    <None Include="data\billboard_electronic.json">
       <Filter>Source Files\data</Filter>
     </None>
-    <None Include="..\data\billboard_greatest_hot_100.json">
+    <None Include="data\billboard_greatest_hot_100.json">
       <Filter>Source Files\data</Filter>
     </None>
-    <None Include="..\data\billboard_hot_100.json">
+    <None Include="data\billboard_hot_100.json">
       <Filter>Source Files\data</Filter>
     </None>
-    <None Include="..\data\billboard_jazz.json">
+    <None Include="data\billboard_jazz.json">
       <Filter>Source Files\data</Filter>
     </None>
-    <None Include="..\data\billboard_r&amp;b.json">
+    <None Include="data\billboard_r&amp;b.json">
       <Filter>Source Files\data</Filter>
     </None>
-    <None Include="..\data\billboard_rap.json">
+    <None Include="data\billboard_rap.json">
       <Filter>Source Files\data</Filter>
     </None>
-    <None Include="..\data\billboard_rock.json">
+    <None Include="data\billboard_rock.json">
       <Filter>Source Files\data</Filter>
     </None>
   </ItemGroup>

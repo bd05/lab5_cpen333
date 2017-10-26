@@ -57,8 +57,12 @@ class MusicLibrary {
     //=================================
     // TODO: Remove song from database
     //=================================
+	size_t removed = songs_.erase(Song(song));
 
-    return false;
+	if (removed > 0) 
+		return true;
+    else 
+		return false;
   }
 
   /**
@@ -72,7 +76,12 @@ class MusicLibrary {
     //==================================
     // TODO: Remove songs from database
     //==================================
-
+	for (const Song& song : songs) {
+		if (remove(song)) {
+			++count;
+		}
+	}
+	
     return count;
   }
 
@@ -89,14 +98,16 @@ class MusicLibrary {
     //=====================================================
     // TODO: Modify to also include title_regex in search
     //=====================================================
+	std::regex tregex(title_regex);
 
     // compile regular expressions
     std::regex aregex(artist_regex);
 
     // search through songs for titles and artists matching search expressions
     for (const auto& song : songs_) {
-      if (std::regex_search(song.artist, aregex)) {
-        out.push_back(song);
+      //if (std::regex_search(song.artist, aregex)) {
+	  if (std::regex_search(song.artist, aregex) && std::regex_search(song.title, tregex)) {
+		out.push_back(song);
       }
     }
 

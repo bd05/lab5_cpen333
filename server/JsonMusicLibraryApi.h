@@ -118,7 +118,46 @@ class JsonMusicLibraryApi : public MusicLibraryApi {
     // TODO: read and append to str in chunks of 256 bytes
     //======================================================
     bool success = false;
+	int currSize = 256;
+	int bytesLeft = size;
+	if (size < 256)
+		currSize = size;
 
+	while (bytesLeft > 0) {
+		if (socket_.read_all(cbuff, currSize)) {
+			success = true;
+			for (int j = 0; j < currSize; j++) {
+				str += cbuff[j];
+			}
+			std::cout << "string reading so far: " << str << std::endl;
+			bytesLeft -= currSize;
+			if (bytesLeft - currSize < 0) {
+				currSize = bytesLeft;
+			}
+		}
+		std::cout << "bytes left to read: " << bytesLeft << std::endl;
+		std::cout << "currSize: " << currSize << std::endl;
+		std::cout << "end of while loop" << std::endl;
+	}
+
+	/*for (size_t i = 0; i < size / 256; i++) {
+		if (!socket_.read(cbuff, 256)) {
+			return false;
+		}
+		for (int j = 0; j < 256; j++) {
+			str += cbuff[j];
+		}
+
+	}
+	if (size % 256 != 0) {
+		if (!socket_.read(cbuff, size % 256))
+			return false;
+		for (int j = 0; j < size % 256; j++)
+			str += cbuff[j];
+	}*/
+	std::cout << "done reading message" << std::endl;
+
+	//return true;
     return success;
   }
 
@@ -142,7 +181,15 @@ class JsonMusicLibraryApi : public MusicLibraryApi {
     // TODO: Decode 4-byte big-endian integer size
     //=================================================
     int size = 0;
-
+	size = int((unsigned char)(buff[0]) << 24 |
+		(unsigned char)(buff[1]) << 16 |
+		(unsigned char)(buff[2]) << 8 |
+		(unsigned char)(buff[3]));
+	/*__int32 size = __int32(buff[23] & 0xFF)
+		+ __int32(buff[2] << 4) & 0xFF
+		+ __int32(buff[1] << 8) & 0xFF
+		+ __int32(buff[0] << 12) & 0xFF;*/
+	std::cout << "size: " << size << std::endl;
     // read entire JSON string
     std::string str;
     if (!readString(str, size)) {
@@ -174,7 +221,6 @@ class JsonMusicLibraryApi : public MusicLibraryApi {
    */
   bool sendMessage(const Message& msg) {
     JSON jmsg = JsonConverter::toJSON(msg);
-
     // write single JSON byte
     char id = JSON_ID;
     if (!socket_.write(&id, 1)) {
@@ -200,12 +246,14 @@ class JsonMusicLibraryApi : public MusicLibraryApi {
     // parse first byte, ensure it is of JSON type
     char id;
     if (!socket_.read_all(&id, 1) || id != JSON_ID) {
+		std::cout << "first if failed in recvMessage" << std::endl;
       return nullptr;
     }
 
     // if it is a JSON string, parse into a message
     JSON jmsg;
     if (!recvJSON(jmsg)) {
+		std::cout << "second if failed in recvMessage" << std::endl;
       return nullptr;
     }
 

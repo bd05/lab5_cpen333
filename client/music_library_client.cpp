@@ -9,6 +9,7 @@
 #include "MusicLibrary.h"
 #include "JsonMusicLibraryApi.h"
 
+
 #include <cpen333/process/socket.h>
 
 #include <iostream>
@@ -51,11 +52,14 @@ void do_add(MusicLibraryApi &api) {
   Song song(artist, title);
   AddMessage msg(song);
   if (api.sendMessage(msg)) {
+	  std::cout << "api.sendMessage(msg) passed" << std::endl;
     // get response
     std::unique_ptr<Message> msgr = api.recvMessage();
+	std::cout << "api.recvMessage() passed" << std::endl;
     AddResponseMessage& resp = (AddResponseMessage&)(*msgr);
-
+	std::cout << "AddResponseMessage passed" << std::endl;
     if (resp.status == MESSAGE_STATUS_OK) {
+		std::cout << "message status was ok" << std::endl;
       std::cout << std::endl << "   \"" << song << "\" added successfull." << std::endl;
     } else {
       std::cout << std::endl << "   Adding \"" << song << "\" failed: " << resp.info << std::endl;
@@ -71,7 +75,33 @@ void do_remove(MusicLibraryApi &api) {
   //=================================================
   // TODO: Implement "remove" functionality
   //=================================================
-  
+	std::string title, artist;
+
+	// collect artist and title
+	std::cout << std::endl << "Remove Song" << std::endl;
+	std::cout << "   Artist: ";
+	std::getline(std::cin, artist);
+	std::cout << "   Title:  ";
+	std::getline(std::cin, title);
+
+
+	// send message to server and wait for response
+	Song song(artist, title);
+	RemoveMessage msg(song);
+	if (api.sendMessage(msg)) {
+		// get response
+		std::unique_ptr<Message> msgr = api.recvMessage();
+		RemoveResponseMessage& resp = (RemoveResponseMessage&)(*msgr);
+
+		if (resp.status == MESSAGE_STATUS_OK) {
+			std::cout << std::endl << "   \"" << song << "\" remove successfull." << std::endl;
+		}
+		else {
+			std::cout << std::endl << "   Removing \"" << song << "\" failed: " << resp.info << std::endl;
+		}
+	}
+
+	std::cout << std::endl;
 }
 
 // search for songs on server

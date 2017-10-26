@@ -70,7 +70,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Users\Bernadette\source\repos\lab5_cpen333\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Users\Bernadette\source\repos\lab5_cpen333\include;C:\Users\Bernadette\source\repos\lab5_cpen333\server</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -113,16 +113,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="json.hpp" />
+    <ClCompile Include="music_library_client.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="JsonConverter.h" />
     <ClInclude Include="JsonMusicLibraryApi.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MusicLibrary.h" />
-    <ClInclude Include="MusicLibraryApi.h" />
     <ClInclude Include="Song.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="music_library_client.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

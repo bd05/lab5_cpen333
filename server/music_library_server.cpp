@@ -27,15 +27,15 @@
  * @param id client id for printing messages to the console
  */
 void service(MusicLibrary &lib, MusicLibraryApi &&api, int id) {
-
   //=========================================================
   // TODO: Implement thread safety
   //=========================================================
+  static std::mutex serviceMutex;
 
   std::cout << "Client " << id << " connected" << std::endl;
 
   // receive message
-  std::unique_ptr<Message> msg = api.recvMessage();
+  std::unique_ptr<Message> msg = api.recvMessage(); //msg is becoming a nullptr
 
   // continue while we don't have an error
   while (msg != nullptr) {
@@ -47,52 +47,85 @@ void service(MusicLibrary &lib, MusicLibraryApi &&api, int id) {
         // process "add" message
         // get reference to ADD
         AddMessage &add = (AddMessage &) (*msg);
-        std::cout << "Client " << id << " adding song: " << add.song << std::endl;
+		{
+			std::lock_guard<std::mutex> lock(serviceMutex);
+			std::cout << "Client " << id << " adding song: " << add.song << std::endl;
 
-        // add song to library
-        bool success = false;
-        success = lib.add(add.song);
+			// add song to library
+			bool success = false;
 
-        // send response
-        if (success) {
-          api.sendMessage(AddResponseMessage(add, MESSAGE_STATUS_OK));
-        } else {
-          api.sendMessage(AddResponseMessage(add,
-            MESSAGE_STATUS_ERROR,
-            "Song already exists in database"));
-        }
+			success = lib.add(add.song);
+
+			// send response
+			if (success) {
+				std::cout << "in success"<< std::endl;
+				api.sendMessage(AddResponseMessage(add, MESSAGE_STATUS_OK));
+				std::cout << "after api.sendMessage()" << std::endl;
+			}
+			else {
+				api.sendMessage(AddResponseMessage(add,
+					MESSAGE_STATUS_ERROR,
+					"Song already exists in database"));
+			}
+		}
         break;
       }
-      case MessageType::REMOVE: {
-        //====================================================
-        // TODO: Implement "remove" functionality
-        //====================================================
+	  case MessageType::REMOVE: {
+		  //====================================================
+		  // TODO: Implement "remove" functionality
+		  //====================================================
+		  // process "remove" message
+		  // get reference to REMOVE
+		  RemoveMessage &remove = (RemoveMessage &)(*msg);
+		  {
+			  std::lock_guard<std::mutex> lock(serviceMutex);
+			  std::cout << "Client " << id << " removing song: " << remove.song << std::endl;
 
+			  // remove song to library
+			  bool success = false;
+
+			  success = lib.remove(remove.song);
+
+			  // send response
+			  if (success) {
+				  api.sendMessage(RemoveResponseMessage(remove, MESSAGE_STATUS_OK));
+			  }
+			  else {
+				  api.sendMessage(RemoveResponseMessage(remove,
+					  MESSAGE_STATUS_ERROR,
+					  "failed to remove song from database"));
+			  }
+		  }
         break;
       }
-      case MessageType::SEARCH: {
-        // process "search" message
-        // get reference to SEARCH
-        SearchMessage &search = (SearchMessage &) (*msg);
+	  case MessageType::SEARCH: {
+		  // process "search" message
+		  // get reference to SEARCH
+		  SearchMessage &search = (SearchMessage &)(*msg);
+		  {
+			  std::lock_guard<std::mutex> lock(serviceMutex);
+			  std::cout << "Client " << id << " searching for: "
+				  << search.artist_regex << " - " << search.title_regex << std::endl;
 
-        std::cout << "Client " << id << " searching for: "
-                    << search.artist_regex << " - " << search.title_regex << std::endl;
+			  // search library
+			  std::vector<Song> results;
 
-        // search library
-        std::vector<Song> results;
-        results = lib.find(search.artist_regex, search.title_regex);
+			  results = lib.find(search.artist_regex, search.title_regex);
 
-        // send response
-        api.sendMessage(SearchResponseMessage(search, results, MESSAGE_STATUS_OK));
 
+			  // send response
+			  api.sendMessage(SearchResponseMessage(search, results, MESSAGE_STATUS_OK));
+		  }
         break;
       }
       case MessageType::GOODBYE: {
         // process "goodbye" message
+		std::lock_guard<std::mutex> lock(serviceMutex);
         std::cout << "Client " << id << " closing" << std::endl;
         return;
       }
       default: {
+		std::lock_guard<std::mutex> lock(serviceMutex);
         std::cout << "Client " << id << " sent invalid message" << std::endl;
       }
     }
@@ -121,7 +154,17 @@ void load_songs(MusicLibrary &lib, const std::string& filename) {
   }
 
 }
-/*
+
+void handleClient(cpen333::process::socket client, MusicLibrary lib, int id) {
+	// create API handler
+	JsonMusicLibraryApi api(std::move(client));
+	std::cout << "past making api" << std::endl;
+	// service client-server communication
+	service(lib, std::move(api), id);
+	std::cout << "past making service" << std::endl;
+	return;
+}
+
 int main() {
 
   // load  data
@@ -159,16 +202,36 @@ int main() {
   //       - Send the API wrapper to the service(...) function
   //         to run in a new detached thread
   //===============================================================
-  cpen333::process::socket client;
-  if (server.accept(client)) {
-    // create API handler
-    JsonMusicLibraryApi api(std::move(client));
-    // service client-server communication
-    service(lib, std::move(api), 0);
-  }
 
-  // close server
+  // create and store threads
+  std::vector<std::thread> threads;
+  int idNum = 0;
+  cpen333::process::socket client;
+  while (server.accept(client)) {
+
+	  // create API handler
+	  //JsonMusicLibraryApi api(std::move(client));
+	  // service client-server communication
+	  //service(lib, std::move(api), 0); 
+	  std::thread clientThread(handleClient, std::move(client), std::ref(lib), ++idNum);
+	  clientThread.detach();
+	  //threads.push_back(std::thread(handleClient, std::move(client), std::ref(lib), ++idNum));
+  }
+  /*int numThreads = threads.size();
+  for (int i = 0; i < numThreads; i++) {
+  	  //threads[i].join();
+	  threads[i].detach();
+  }*/
+
+  //or:
+  /*
+  while(server.accept(client)){
+  std::thread(handleClient, std::move(client), std::ref(lib))
+  thread.detach();
+  }
+  */
+  //close server
   server.close();
 
   return 0;
-}*/
+}

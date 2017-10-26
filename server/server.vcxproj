@@ -127,17 +127,22 @@
     <ClInclude Include="TestException.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\data\billboard_adult_contemporary.json" />
-    <None Include="..\data\billboard_adult_pop.json" />
-    <None Include="..\data\billboard_alternative.json" />
-    <None Include="..\data\billboard_country.json" />
-    <None Include="..\data\billboard_electronic.json" />
-    <None Include="..\data\billboard_greatest_hot_100.json" />
-    <None Include="..\data\billboard_hot_100.json" />
-    <None Include="..\data\billboard_jazz.json" />
-    <None Include="..\data\billboard_r&amp;b.json" />
-    <None Include="..\data\billboard_rap.json" />
-    <None Include="..\data\billboard_rock.json" />
+    <Text Include="data\lyrics\Ella Fitzgerald - Dream A Little Dream Of Me.txt" />
+    <Text Include="data\lyrics\Eurythmics - Sweet Dreams.txt" />
+    <Text Include="data\lyrics\Katy Perry - Teenage Dream.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\billboard_adult_contemporary.json" />
+    <None Include="data\billboard_adult_pop.json" />
+    <None Include="data\billboard_alternative.json" />
+    <None Include="data\billboard_country.json" />
+    <None Include="data\billboard_electronic.json" />
+    <None Include="data\billboard_greatest_hot_100.json" />
+    <None Include="data\billboard_hot_100.json" />
+    <None Include="data\billboard_jazz.json" />
+    <None Include="data\billboard_r&amp;b.json" />
+    <None Include="data\billboard_rap.json" />
+    <None Include="data\billboard_rock.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

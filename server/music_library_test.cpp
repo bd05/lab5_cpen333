@@ -160,14 +160,14 @@ void setupLibrary(MusicLibrary& lib) {
 		}
 	}
 }
-
+/*
 int main() {
 
 	MusicLibrary lib;
 	setupLibrary(lib);
 
 	try {
-
+		testAddSong(lib, "taylor swift", "bad blood");
 		testAddSong(lib, "Auli'i Cravalho", "How Far I'll Go");
 		testRemoveSong(lib, "Auli'i Cravalho", "How Far I'll Go");
 
@@ -181,4 +181,4 @@ int main() {
 	}
 
 	return 0;
-}
+}*/
