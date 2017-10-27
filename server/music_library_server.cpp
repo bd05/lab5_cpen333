@@ -47,27 +47,27 @@ void service(MusicLibrary &lib, MusicLibraryApi &&api, int id) {
         // process "add" message
         // get reference to ADD
         AddMessage &add = (AddMessage &) (*msg);
-		{
-			std::lock_guard<std::mutex> lock(serviceMutex);
+		//{
+			//std::lock_guard<std::mutex> lock(serviceMutex);
 			std::cout << "Client " << id << " adding song: " << add.song << std::endl;
 
 			// add song to library
 			bool success = false;
 
+			serviceMutex.lock();
 			success = lib.add(add.song);
+			serviceMutex.unlock();
 
 			// send response
 			if (success) {
-				std::cout << "in success"<< std::endl;
 				api.sendMessage(AddResponseMessage(add, MESSAGE_STATUS_OK));
-				std::cout << "after api.sendMessage()" << std::endl;
 			}
 			else {
 				api.sendMessage(AddResponseMessage(add,
 					MESSAGE_STATUS_ERROR,
 					"Song already exists in database"));
 			}
-		}
+		//}
         break;
       }
 	  case MessageType::REMOVE: {
@@ -77,14 +77,16 @@ void service(MusicLibrary &lib, MusicLibraryApi &&api, int id) {
 		  // process "remove" message
 		  // get reference to REMOVE
 		  RemoveMessage &remove = (RemoveMessage &)(*msg);
-		  {
-			  std::lock_guard<std::mutex> lock(serviceMutex);
+		 // {
+			  //std::lock_guard<std::mutex> lock(serviceMutex);
 			  std::cout << "Client " << id << " removing song: " << remove.song << std::endl;
 
 			  // remove song to library
 			  bool success = false;
 
+			  serviceMutex.lock();
 			  success = lib.remove(remove.song);
+			  serviceMutex.unlock();
 
 			  // send response
 			  if (success) {
@@ -95,27 +97,28 @@ void service(MusicLibrary &lib, MusicLibraryApi &&api, int id) {
 					  MESSAGE_STATUS_ERROR,
 					  "failed to remove song from database"));
 			  }
-		  }
+		  //}
         break;
       }
 	  case MessageType::SEARCH: {
 		  // process "search" message
 		  // get reference to SEARCH
 		  SearchMessage &search = (SearchMessage &)(*msg);
-		  {
-			  std::lock_guard<std::mutex> lock(serviceMutex);
+		 // {
+			  //std::lock_guard<std::mutex> lock(serviceMutex);
 			  std::cout << "Client " << id << " searching for: "
 				  << search.artist_regex << " - " << search.title_regex << std::endl;
 
 			  // search library
 			  std::vector<Song> results;
-
+			  serviceMutex.lock();
 			  results = lib.find(search.artist_regex, search.title_regex);
+			  serviceMutex.unlock();
 
 
 			  // send response
 			  api.sendMessage(SearchResponseMessage(search, results, MESSAGE_STATUS_OK));
-		  }
+		 // }
         break;
       }
       case MessageType::GOODBYE: {
@@ -158,10 +161,8 @@ void load_songs(MusicLibrary &lib, const std::string& filename) {
 void handleClient(cpen333::process::socket client, MusicLibrary lib, int id) {
 	// create API handler
 	JsonMusicLibraryApi api(std::move(client));
-	std::cout << "past making api" << std::endl;
 	// service client-server communication
 	service(lib, std::move(api), id);
-	std::cout << "past making service" << std::endl;
 	return;
 }
 
@@ -210,10 +211,10 @@ int main() {
   while (server.accept(client)) {
 
 	  // create API handler
-	  //JsonMusicLibraryApi api(std::move(client));
+	  JsonMusicLibraryApi api(std::move(client));
 	  // service client-server communication
 	  //service(lib, std::move(api), 0); 
-	  std::thread clientThread(handleClient, std::move(client), std::ref(lib), ++idNum);
+	  std::thread clientThread(service, std::ref(lib), std::move(api), ++idNum);
 	  clientThread.detach();
 	  //threads.push_back(std::thread(handleClient, std::move(client), std::ref(lib), ++idNum));
   }
